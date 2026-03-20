@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel administrador | Respaldo de pedidos CHC</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-block text-only-brand">
+        <div>
+          <p class="brand-overline">Soporte360 CHC</p>
+          <h2 class="brand-title">Panel de respaldo de pedidos</h2>
+        </div>
+      </div>
+      <nav class="topbar-actions">
+        <a href="#resumen" class="nav-pill nav-pill-active">Resumen</a>
+        <a href="#archivos" class="nav-pill">Archivos</a>
+        <a href="#sucursales" class="nav-pill">Sucursales</a>
+        <button id="logoutBtn" class="nav-pill nav-button-pill" type="button">Cerrar sesión</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell admin-shell">
+    <section class="hero-panel admin-hero compact-admin-hero" id="resumen">
+      <div>
+        <span class="eyebrow">Administrador</span>
+        <h1>Resumen operativo del respaldo</h1>
+        <p>Consulta cargas, descarga archivos y administra sucursales desde un solo lugar.</p>
+      </div>
+      <div class="hero-date-box">
+        <label for="filterDate" class="hero-label">Fecha de trabajo</label>
+        <input type="date" id="filterDate">
+        <div class="hero-actions">
+          <button id="filterBtn" class="primary-btn" type="button">Aplicar</button>
+          <button id="todayBtn" class="secondary-btn" type="button">Hoy</button>
+          <button id="downloadAllBtn" class="outline-btn" type="button">ZIP del día</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <span class="stat-label">Archivos del día</span>
+        <strong class="stat-value" id="statUploadsToday">0</strong>
+        <span class="stat-foot">Respaldos cargados en la fecha seleccionada</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Sucursales con carga</span>
+        <strong class="stat-value" id="statBranchesLoaded">0</strong>
+        <span class="stat-foot">Sucursales activas que ya subieron archivo</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Pendientes</span>
+        <strong class="stat-value" id="statBranchesPending">0</strong>
+        <span class="stat-foot">Sucursales activas sin archivo todavía</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Sucursales activas</span>
+        <strong class="stat-value" id="statBranchesActive">0</strong>
+        <span class="stat-foot">Catálogo disponible para captura</span>
+      </article>
+    </section>
+
+    <div id="adminMessage" class="feedback-box hidden"></div>
+
+    <section class="dashboard-grid">
+      <div class="panel panel-wide" id="archivos">
+        <div class="panel-heading spaced-heading">
+          <div>
+            <h3>Archivos cargados</h3>
+            <p class="muted">Consulta, filtra y descarga los respaldos registrados.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="uploadsTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Sucursal</th>
+                <th>Archivo</th>
+                <th>Fecha de subida</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside class="panel" aria-labelledby="estadoTitle">
+        <div class="panel-heading spaced-heading">
+          <div>
+            <h3 id="estadoTitle">Estado por sucursal</h3>
+            <p class="muted">Vista rápida de quién ya cargó archivo en la fecha seleccionada.</p>
+          </div>
+        </div>
+        <div id="branchStatusSummary" class="status-grid admin-status-grid"></div>
+      </aside>
+    </section>
+
+    <section class="dashboard-grid" id="sucursales">
+      <div class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3>Agregar sucursal</h3>
+            <p class="muted">Alta manual de nuevas sucursales para el portal.</p>
+          </div>
+        </div>
+
+        <form id="branchForm" class="stack-form compact-form">
+          <label for="branchCode">Código</label>
+          <input type="text" id="branchCode" maxlength="10" placeholder="001" required>
+
+          <label for="branchName">Nombre</label>
+          <input type="text" id="branchName" maxlength="255" placeholder="Abastos" required>
+
+          <label for="branchActive">Estado inicial</label>
+          <select id="branchActive">
+            <option value="1">Activa</option>
+            <option value="0">Inactiva</option>
+          </select>
+
+          <button type="submit" class="primary-btn">Guardar sucursal</button>
+        </form>
+      </div>
+
+      <div class="panel panel-wide">
+        <div class="panel-heading">
+          <div>
+            <h3>Catálogo de sucursales</h3>
+            <p class="muted">Activa o desactiva sucursales sin tocar la base manualmente.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="branchesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

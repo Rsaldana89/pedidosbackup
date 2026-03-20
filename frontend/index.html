@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Respaldo de pedidos | CHC</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-block text-only-brand">
+        <div>
+          <p class="brand-overline">Soporte360 CHC</p>
+          <h2 class="brand-title">Respaldo de pedidos</h2>
+        </div>
+      </div>
+      <nav class="topbar-actions">
+        <span class="nav-pill nav-pill-active">Carga de respaldo</span>
+        <a class="nav-pill" href="login.html">Panel admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell shell-narrow">
+    <section class="hero-panel minimal-hero">
+      <div>
+        <span class="eyebrow">Portal de contingencia</span>
+        <h1>Carga rápida de archivo de respaldo</h1>
+        <p>Selecciona tu sucursal y sube el archivo Excel cuando falle la sincronización.</p>
+      </div>
+    </section>
+
+    <section class="content-grid single-column">
+      <div class="panel upload-panel">
+        <div class="panel-heading">
+          <div>
+            <h3>Enviar archivo de respaldo</h3>
+            <p class="muted">Solo se permiten archivos Excel .xls o .xlsx de hasta 10 MB.</p>
+          </div>
+        </div>
+
+        <form id="uploadForm" class="stack-form">
+          <label for="sucursal">Sucursal</label>
+          <select id="sucursal" name="sucursal" required>
+            <option value="">Cargando sucursales...</option>
+          </select>
+
+          <div class="label-with-action">
+            <label for="file">Archivo Excel</label>
+            <button type="button" id="helpToggle" class="help-button" aria-expanded="false" aria-controls="helpImagePanel">?</button>
+          </div>
+          <input type="file" id="file" name="file" accept=".xls,.xlsx" required>
+
+          <div id="helpImagePanel" class="help-panel hidden">
+            <p class="help-title">Guía visual</p>
+            <img src="assets/imagen.png" alt="Guía visual para seleccionar el archivo correcto" class="help-image">
+          </div>
+
+          <div class="helper-list">
+            <div class="helper-item">
+              <strong>Consejo:</strong> usa el archivo original exportado por tu sistema.
+            </div>
+            <div class="helper-item">
+              <strong>Importante:</strong> no cierres esta ventana hasta ver el mensaje de éxito.
+            </div>
+          </div>
+
+          <div class="form-row-actions">
+            <button type="submit" class="primary-btn">Subir archivo</button>
+            <a href="login.html" class="ghost-link">Ir al panel administrador</a>
+          </div>
+        </form>
+
+        <div id="message" class="feedback-box hidden"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/index.js"></script>
+</body>
+</html>
