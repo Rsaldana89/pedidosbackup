@@ -1,7 +1,7 @@
 const express = require('express');
 const archiver = require('archiver');
 const db = require('../db');
-const { isAuthenticated } = require('../middleware/authMiddleware');
+const { isAuthenticated, isAdmin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -87,7 +87,7 @@ router.get('/admin/dashboard', isAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/admin/sucursales', isAuthenticated, async (req, res) => {
+router.get('/admin/sucursales', isAdmin, async (req, res) => {
   try {
     const [rows] = await db.execute(
       'SELECT id, codigo, nombre, activo FROM sucursales ORDER BY codigo ASC'
@@ -99,7 +99,7 @@ router.get('/admin/sucursales', isAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/admin/sucursales', isAuthenticated, async (req, res) => {
+router.post('/admin/sucursales', isAdmin, async (req, res) => {
   try {
     const codigo = sanitizeCode(req.body.codigo);
     const nombre = sanitizeText(req.body.nombre);
@@ -130,7 +130,7 @@ router.post('/admin/sucursales', isAuthenticated, async (req, res) => {
   }
 });
 
-router.patch('/admin/sucursales/:id/status', isAuthenticated, async (req, res) => {
+router.patch('/admin/sucursales/:id/status', isAdmin, async (req, res) => {
   try {
     const id = Number(req.params.id);
     const activo = String(req.body.activo) === '0' ? 0 : 1;

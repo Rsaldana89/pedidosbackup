@@ -1,15 +1,23 @@
 /*
- * Middleware simple para comprobar si el usuario está autenticado y
- * tiene rol de administrador. Si la sesión contiene el userId y el
- * rol es 'admin', se continúa con la siguiente función; de lo
- * contrario, se devuelve un error 401 Unauthorized. Esto se utiliza
- * para proteger las rutas de administración.
+ * Middleware para comprobar si el usuario tiene una sesión válida.
+ * Cualquier usuario autenticado (admin o manager) puede entrar al panel.
  */
 function isAuthenticated(req, res, next) {
-  if (req.session && req.session.userId && req.session.role === 'admin') {
+  if (req.session && req.session.userId) {
     return next();
   }
   return res.status(401).json({ message: 'No autorizado' });
 }
 
-module.exports = { isAuthenticated };
+/*
+ * Middleware exclusivo para administradores.
+ * Se usa en las rutas de alta y mantenimiento de sucursales.
+ */
+function isAdmin(req, res, next) {
+  if (req.session && req.session.userId && req.session.role === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ message: 'Solo administrador' });
+}
+
+module.exports = { isAuthenticated, isAdmin };

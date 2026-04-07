@@ -1,0 +1,10 @@
+# Ignora dependencias y archivos de entorno
+node_modules/
+.env
+# Carpeta donde se almacenan los archivos subidos
+backend/uploads/
+# Archivos de log y zips generados
+*.log
+*.zip
+# Sistema operativo
+.DS_Store

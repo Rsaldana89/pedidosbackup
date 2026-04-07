@@ -1,6 +1,6 @@
 {
   "name": "pedido-backup",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "Sistema de respaldo de carga de pedidos en formato Excel",
   "main": "backend/server.js",
   "scripts": {

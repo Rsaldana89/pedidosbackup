@@ -33,6 +33,7 @@ function formatDateTime(value) {
 
 function handleUnauthorized(response) {
   if (response.status === 401) {
+    localStorage.removeItem('userRole');
     window.location.href = 'login.html';
     return true;
   }
@@ -136,20 +137,21 @@ async function fetchBranches() {
   branchesTableBody.innerHTML = '';
 
   if (!data.length) {
-    branchesTableBody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay sucursales registradas.</td></tr>';
+    branchesTableBody.innerHTML = '<tr><td colspan="3" class="empty-state">No hay sucursales registradas.</td></tr>';
     return data;
   }
 
   data.forEach((branch) => {
     const isActive = Number(branch.activo) === 1;
     const tr = document.createElement('tr');
+    // Combine the branch name and its status badge into one cell so the
+    // status doesn't drift too far on wide screens. This keeps the status
+    // visually connected to the branch it describes.
     tr.innerHTML = `
-      <td>${branch.id}</td>
       <td>${branch.codigo}</td>
-      <td>${branch.nombre}</td>
-      <td><span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">${isActive ? 'Activa' : 'Inactiva'}</span></td>
+      <td>${branch.nombre} <span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">${isActive ? 'Activa' : 'Inactiva'}</span></td>
       <td>
-        <button class="small-btn ${isActive ? 'secondary-btn' : 'primary-btn'} toggle-branch-btn" data-id="${branch.id}" data-next="${isActive ? 0 : 1}">
+        <button type="button" class="small-btn ${isActive ? 'secondary-btn' : 'primary-btn'} toggle-branch-btn" data-id="${branch.id}" data-next="${isActive ? 0 : 1}">
           ${isActive ? 'Desactivar' : 'Activar'}
         </button>
       </td>
@@ -230,6 +232,7 @@ async function logout() {
   try {
     await fetch('/api/logout', { method: 'POST' });
   } finally {
+    localStorage.removeItem('userRole');
     window.location.href = 'login.html';
   }
 }
@@ -251,13 +254,32 @@ async function refreshByDate() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Determina el rol del usuario para decidir qué módulos mostrar.
+  const userRole = localStorage.getItem('userRole') || 'admin';
+  const isAdminUser = userRole === 'admin';
+
+  if (!isAdminUser) {
+    const navLinks = document.querySelectorAll('nav.topbar-actions a');
+    navLinks.forEach((link) => {
+      if (link.getAttribute('href') === '#sucursales') {
+        link.style.display = 'none';
+      }
+    });
+
+    const sucursalesSection = document.getElementById('sucursales');
+    if (sucursalesSection) {
+      sucursalesSection.style.display = 'none';
+    }
+  }
+
   filterDateInput.value = getTodayLocal();
 
   try {
-    await Promise.all([
-      refreshByDate(),
-      fetchBranches()
-    ]);
+    await refreshByDate();
+
+    if (isAdminUser) {
+      await fetchBranches();
+    }
   } catch (error) {
     console.error(error);
   }
@@ -273,12 +295,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = `/api/download-all?date=${encodeURIComponent(date)}`;
   });
 
-  document.getElementById('branchForm').addEventListener('submit', createBranch);
-  document.getElementById('logoutBtn').addEventListener('click', logout);
+  if (isAdminUser) {
+    document.getElementById('branchForm').addEventListener('submit', createBranch);
 
-  branchesTableBody.addEventListener('click', (event) => {
-    if (event.target.classList.contains('toggle-branch-btn')) {
-      toggleBranchStatus(event.target.dataset.id, event.target.dataset.next);
-    }
-  });
+    branchesTableBody.addEventListener('click', (event) => {
+      if (event.target.classList.contains('toggle-branch-btn')) {
+        toggleBranchStatus(event.target.dataset.id, event.target.dataset.next);
+      }
+    });
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', logout);
 });

@@ -3,6 +3,7 @@ const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
 const initDatabase = require('./initDb');
+const db = require('./db'); // 👈 IMPORTANTE
 
 const uploadRoutes = require('./routes/upload.routes');
 const adminRoutes = require('./routes/admin.routes');
@@ -40,7 +41,15 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 initDatabase()
-  .then(() => {
+  .then(async () => {
+    try {
+      // 🔥 AJUSTE DE ZONA HORARIA A MÉXICO
+      await db.execute("SET time_zone = '-06:00'");
+      console.log('🕒 Zona horaria MySQL configurada a México (-06:00)');
+    } catch (err) {
+      console.error('Error configurando zona horaria:', err.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`Servidor iniciado en el puerto ${PORT}`);
     });

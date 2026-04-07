@@ -25,7 +25,11 @@ router.post('/login', async (req, res) => {
     const user = rows[0];
     req.session.userId = user.id;
     req.session.role = user.role;
-    res.json({ message: 'Inicio de sesión exitoso' });
+    // In addition to the success message, return the user role so the frontend can
+    // determine which sections of the admin panel to display. This avoids
+    // additional requests just to discover the current user role.  Only
+    // non-sensitive information (role) is returned here.
+    res.json({ message: 'Inicio de sesión exitoso', role: user.role });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error en el inicio de sesión' });

@@ -33,6 +33,15 @@ loginForm.addEventListener('submit', async (e) => {
       return;
     }
 
+    // Store the user role in localStorage so the admin panel can decide which
+    // sections to display. This will remain until the user logs out or the
+    // storage is cleared. Fallback to 'admin' if the role is not provided.
+    if (data && data.role) {
+      localStorage.setItem('userRole', data.role);
+    } else {
+      localStorage.setItem('userRole', 'admin');
+    }
+
     showLoginMessage('Acceso correcto. Redirigiendo...', 'success');
     window.setTimeout(() => {
       window.location.href = 'admin.html';
